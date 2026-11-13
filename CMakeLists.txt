@@ -9,26 +9,26 @@ endif()
 if(MSVC)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")  # static CRT: no VC++ redist needed
 endif()
-project(FerroEcho VERSION 0.1.0 LANGUAGES C CXX)
+project(TapeheadEcho VERSION 0.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # ---- Core engine (no JUCE dependency, unit-testable) ----
-add_library(ferro_engine STATIC Source/engine/Engine.cpp)
-target_include_directories(ferro_engine PUBLIC Source/engine)
-set_target_properties(ferro_engine PROPERTIES POSITION_INDEPENDENT_CODE ON)
+add_library(tapehead_engine STATIC Source/engine/Engine.cpp)
+target_include_directories(tapehead_engine PUBLIC Source/engine)
+set_target_properties(tapehead_engine PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-option(FERRO_BUILD_TESTS "Build engine tests" ON)
-if(FERRO_BUILD_TESTS)
-    add_executable(ferro_tests tests/EngineTests.cpp)
-    target_link_libraries(ferro_tests PRIVATE ferro_engine)
+option(TAPEHEAD_BUILD_TESTS "Build engine tests" ON)
+if(TAPEHEAD_BUILD_TESTS)
+    add_executable(tapehead_tests tests/EngineTests.cpp)
+    target_link_libraries(tapehead_tests PRIVATE tapehead_engine)
     enable_testing()
-    add_test(NAME engine COMMAND ferro_tests)
+    add_test(NAME engine COMMAND tapehead_tests)
 endif()
 
-option(FERRO_BUILD_PLUGIN "Build the JUCE plugin" ON)
-if(NOT FERRO_BUILD_PLUGIN)
+option(TAPEHEAD_BUILD_PLUGIN "Build the JUCE plugin" ON)
+if(NOT TAPEHEAD_BUILD_PLUGIN)
     return()
 endif()
 
@@ -45,12 +45,12 @@ else()
     FetchContent_MakeAvailable(JUCE)
 endif()
 
-juce_add_plugin(FerroEcho
-    COMPANY_NAME "FerroAudio"
-    PLUGIN_MANUFACTURER_CODE Frro
-    PLUGIN_CODE Fe2a
+juce_add_plugin(TapeheadEcho
+    COMPANY_NAME "TapeheadAudio"
+    PLUGIN_MANUFACTURER_CODE Thed
+    PLUGIN_CODE Th2e
     FORMATS VST3 Standalone
-    PRODUCT_NAME "Ferro Echo"
+    PRODUCT_NAME "Tapehead Echo"
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE
@@ -59,19 +59,19 @@ juce_add_plugin(FerroEcho
     COPY_PLUGIN_AFTER_BUILD FALSE
     VST3_CATEGORIES Fx Delay Reverb)
 
-target_sources(FerroEcho PRIVATE
+target_sources(TapeheadEcho PRIVATE
     Source/plugin/PluginProcessor.cpp
     Source/plugin/PluginEditor.cpp)
 
-target_compile_definitions(FerroEcho PUBLIC
+target_compile_definitions(TapeheadEcho PUBLIC
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
     JUCE_VST3_CAN_REPLACE_VST2=0
     JUCE_DISPLAY_SPLASH_SCREEN=0)
 
-target_link_libraries(FerroEcho
+target_link_libraries(TapeheadEcho
     PRIVATE
-        ferro_engine
+        tapehead_engine
         juce::juce_audio_utils
     PUBLIC
         juce::juce_recommended_config_flags

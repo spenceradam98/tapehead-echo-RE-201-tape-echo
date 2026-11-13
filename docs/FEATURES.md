@@ -1,4 +1,4 @@
-# Ferro Echo v0.1: what it models
+# Tapehead Echo v0.1: what it models
 
 ![UI](screenshot.png)
 

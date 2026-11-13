@@ -11,7 +11,7 @@ constexpr int W = 1060, H = 520;
 }
 
 // ============================================================================ LookAndFeel
-FerroLookAndFeel::FerroLookAndFeel()
+TapeheadLookAndFeel::TapeheadLookAndFeel()
 {
     setColour (ComboBox::backgroundColourId, Colour (0xff222222));
     setColour (ComboBox::textColourId, kInk);
@@ -23,7 +23,7 @@ FerroLookAndFeel::FerroLookAndFeel()
     setColour (TextButton::textColourOffId, kInk);
 }
 
-void FerroLookAndFeel::drawRotarySlider (Graphics& g, int x, int y, int w, int h, float pos, float start, float end, Slider& s)
+void TapeheadLookAndFeel::drawRotarySlider (Graphics& g, int x, int y, int w, int h, float pos, float start, float end, Slider& s)
 {
     const bool isMode = s.getProperties()["mode"];
     const bool small = s.getProperties()["small"];
@@ -91,7 +91,7 @@ void FerroLookAndFeel::drawRotarySlider (Graphics& g, int x, int y, int w, int h
     g.drawLine (Line<float> (c.getPointOnCircumference (top.getWidth() * 0.15f, angle), c.getPointOnCircumference (top.getWidth() * 0.5f, angle)), 2.2f);
 }
 
-void FerroLookAndFeel::drawToggleButton (Graphics& g, ToggleButton& b, bool, bool)
+void TapeheadLookAndFeel::drawToggleButton (Graphics& g, ToggleButton& b, bool, bool)
 {
     // bat-handle toggle switch, label above
     auto r = b.getLocalBounds().toFloat();
@@ -114,7 +114,7 @@ void FerroLookAndFeel::drawToggleButton (Graphics& g, ToggleButton& b, bool, boo
     g.drawText (b.getButtonText(), r.removeFromTop (14.0f), Justification::centred);
 }
 
-void FerroLookAndFeel::drawButtonBackground (Graphics& g, Button& b, const Colour&, bool highlighted, bool down)
+void TapeheadLookAndFeel::drawButtonBackground (Graphics& g, Button& b, const Colour&, bool highlighted, bool down)
 {
     auto r = b.getLocalBounds().toFloat().reduced (1.0f);
     g.setGradientFill (ColourGradient (Colour (down ? 0xff4a4a4a : 0xff3a3a3a), r.getX(), r.getY(), Colour (0xff141414), r.getX(), r.getBottom(), false));
@@ -124,7 +124,7 @@ void FerroLookAndFeel::drawButtonBackground (Graphics& g, Button& b, const Colou
 }
 
 // ============================================================================ Editor
-FerroEditor::FerroEditor (FerroProcessor& p) : AudioProcessorEditor (&p), proc (p)
+TapeheadEditor::TapeheadEditor (TapeheadProcessor& p) : AudioProcessorEditor (&p), proc (p)
 {
     setLookAndFeel (&lnf);
 
@@ -175,9 +175,9 @@ FerroEditor::FerroEditor (FerroProcessor& p) : AudioProcessorEditor (&p), proc (
     startTimerHz (30);
 }
 
-FerroEditor::~FerroEditor() { setLookAndFeel (nullptr); }
+TapeheadEditor::~TapeheadEditor() { setLookAndFeel (nullptr); }
 
-FerroEditor::Knob& FerroEditor::addKnob (const String& id, const String& label, int kind)
+TapeheadEditor::Knob& TapeheadEditor::addKnob (const String& id, const String& label, int kind)
 {
     auto k = std::make_unique<Knob>();
     k->label = label;
@@ -198,7 +198,7 @@ FerroEditor::Knob& FerroEditor::addKnob (const String& id, const String& label, 
     return *knobs.back();
 }
 
-void FerroEditor::resized()
+void TapeheadEditor::resized()
 {
     const int knobY = 222, kd = 68;
     input->slider.setBounds (Rectangle<int> (kd, kd).withCentre ({ 92, knobY }));
@@ -220,7 +220,7 @@ void FerroEditor::resized()
     presetBox.setBounds (760, sy - 6, 260, 26);
 }
 
-void FerroEditor::drawScale (Graphics& g, const Knob& k)
+void TapeheadEditor::drawScale (Graphics& g, const Knob& k)
 {
     auto b = k.slider.getBounds().toFloat();
     auto c = b.getCentre();
@@ -258,7 +258,7 @@ void FerroEditor::drawScale (Graphics& g, const Knob& k)
     }
 }
 
-void FerroEditor::drawHeadChart (Graphics& g, Rectangle<float> area)
+void TapeheadEditor::drawHeadChart (Graphics& g, Rectangle<float> area)
 {
     // the head chart printed under the mode selector: which heads and reverb each position uses
     const float labelW = 46.0f;
@@ -292,7 +292,7 @@ void FerroEditor::drawHeadChart (Graphics& g, Rectangle<float> area)
     }
 }
 
-void FerroEditor::drawVu (Graphics& g, Rectangle<float> r)
+void TapeheadEditor::drawVu (Graphics& g, Rectangle<float> r)
 {
     // amber-lit VU meter, -20..+3 VU
     g.setColour (Colour (0xff0a0a0a));
@@ -334,7 +334,7 @@ void FerroEditor::drawVu (Graphics& g, Rectangle<float> r)
     g.fillRoundedRectangle (face.withHeight (face.getHeight() * 0.35f), 3.0f);
 }
 
-void FerroEditor::drawTapeWindow (Graphics& g, Rectangle<float> r)
+void TapeheadEditor::drawTapeWindow (Graphics& g, Rectangle<float> r)
 {
     // smoked window onto the transport: loop moving past erase, record, 3 playback heads, capstan
     g.setColour (Colour (0xff0b0b0b));
@@ -434,7 +434,7 @@ void FerroEditor::drawTapeWindow (Graphics& g, Rectangle<float> r)
     }
 }
 
-void FerroEditor::paint (Graphics& g)
+void TapeheadEditor::paint (Graphics& g)
 {
     // case: dark green vinyl with speckle
     g.fillAll (kCaseGreen);
@@ -513,7 +513,7 @@ void FerroEditor::paint (Graphics& g)
         auto br = Rectangle<float> (500.0f, 318.0f, 520.0f, 84.0f);
         g.setColour (kInk);
         g.setFont (FontOptions (40.0f, Font::bold | Font::italic));
-        g.drawText ("FERRO ECHO", br.removeFromTop (48.0f), Justification::centredRight);
+        g.drawText ("TAPEHEAD ECHO", br.removeFromTop (48.0f), Justification::centredRight);
         g.setColour (kInkDim);
         g.setFont (FontOptions (12.0f, Font::bold));
         g.drawText (String::fromUTF8 ("TAPE LOOP ECHO  \xc2\xb7  3 PLAYBACK HEADS  \xc2\xb7  SPRING REVERB"), br.removeFromTop (18.0f), Justification::centredRight);
@@ -531,7 +531,7 @@ void FerroEditor::paint (Graphics& g)
     g.drawText ("PROGRAM", Rectangle<float> (760, svc.getY() + 4, 120, 12), Justification::centredLeft);
 }
 
-void FerroEditor::paintOverChildren (Graphics& g)
+void TapeheadEditor::paintOverChildren (Graphics& g)
 {
     // service-strip labels are dark ink on aluminium: redraw them over the default light ink
     for (auto* k : { wow, age, noise, output })
@@ -543,7 +543,7 @@ void FerroEditor::paintOverChildren (Graphics& g)
     }
 }
 
-void FerroEditor::timerCallback()
+void TapeheadEditor::timerCallback()
 {
     const auto& e = proc.getEngine();
     const float vu = e.getVu();

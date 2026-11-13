@@ -4,11 +4,11 @@
 #include "Engine.h"
 #include "Presets.h"
 
-class FerroProcessor : public juce::AudioProcessor
+class TapeheadProcessor : public juce::AudioProcessor
 {
 public:
-    FerroProcessor();
-    ~FerroProcessor() override = default;
+    TapeheadProcessor();
+    ~TapeheadProcessor() override = default;
 
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override {}
@@ -49,5 +49,5 @@ private:
     std::atomic<bool> powerCycleRequested { false };
     int currentProgram = 0;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FerroProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TapeheadProcessor)
 };

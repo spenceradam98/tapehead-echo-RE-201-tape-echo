@@ -8,7 +8,7 @@ namespace ids
                        wow = "wowFlutter", age = "tapeAge", noise = "noise", splice = "splice", dry = "dry", output = "output";
 }
 
-juce::AudioProcessorValueTreeState::ParameterLayout FerroProcessor::createLayout()
+juce::AudioProcessorValueTreeState::ParameterLayout TapeheadProcessor::createLayout()
 {
     using namespace juce;
     std::vector<std::unique_ptr<RangedAudioParameter>> p;
@@ -39,15 +39,15 @@ juce::AudioProcessorValueTreeState::ParameterLayout FerroProcessor::createLayout
     return { p.begin(), p.end() };
 }
 
-FerroProcessor::FerroProcessor()
+TapeheadProcessor::TapeheadProcessor()
     : AudioProcessor (BusesProperties()
                           .withInput ("Input", juce::AudioChannelSet::stereo(), true)
                           .withOutput ("Output", juce::AudioChannelSet::stereo(), true)),
-      apvts (*this, nullptr, "FerroEcho", createLayout())
+      apvts (*this, nullptr, "TapeheadEcho", createLayout())
 {
 }
 
-bool FerroProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool TapeheadProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
     const auto out = layouts.getMainOutputChannelSet();
     const auto in = layouts.getMainInputChannelSet();
@@ -56,14 +56,14 @@ bool FerroProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
     return okOut && okIn;
 }
 
-void FerroProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void TapeheadProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     engine.setParams (readParams());
     engine.prepare (sampleRate, samplesPerBlock);
     mono.assign ((size_t) juce::jmax (1, samplesPerBlock), 0.0f);
 }
 
-fe::Params FerroProcessor::readParams() const
+fe::Params TapeheadProcessor::readParams() const
 {
     auto v = [this] (const juce::String& id) { return apvts.getRawParameterValue (id)->load(); };
     fe::Params p;
@@ -85,7 +85,7 @@ fe::Params FerroProcessor::readParams() const
     return p;
 }
 
-void FerroProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
+void TapeheadProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
     juce::ScopedNoDenormals noDenormals;
     const int n = buffer.getNumSamples();
@@ -107,15 +107,15 @@ void FerroProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiB
     for (int c = 0; c < outCh; ++c) buffer.copyFrom (c, 0, mono.data(), n);
 }
 
-int FerroProcessor::getNumPrograms() { int n = 0; fe::factoryPresets (n); return n; }
+int TapeheadProcessor::getNumPrograms() { int n = 0; fe::factoryPresets (n); return n; }
 
-const juce::String FerroProcessor::getProgramName (int index)
+const juce::String TapeheadProcessor::getProgramName (int index)
 {
     int n = 0; auto* ps = fe::factoryPresets (n);
     return juce::isPositiveAndBelow (index, n) ? juce::String (ps[index].name) : juce::String();
 }
 
-void FerroProcessor::setCurrentProgram (int index)
+void TapeheadProcessor::setCurrentProgram (int index)
 {
     int n = 0; auto* ps = fe::factoryPresets (n);
     if (! juce::isPositiveAndBelow (index, n)) return;
@@ -142,14 +142,14 @@ void FerroProcessor::setCurrentProgram (int index)
     set (ids::output, p.outputDb);
 }
 
-void FerroProcessor::getStateInformation (juce::MemoryBlock& destData)
+void TapeheadProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     auto state = apvts.copyState();
     state.setProperty ("program", currentProgram, nullptr);
     if (auto xml = state.createXml()) copyXmlToBinary (*xml, destData);
 }
 
-void FerroProcessor::setStateInformation (const void* data, int sizeInBytes)
+void TapeheadProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     if (auto xml = getXmlFromBinary (data, sizeInBytes))
         if (xml->hasTagName (apvts.state.getType()))
@@ -160,6 +160,6 @@ void FerroProcessor::setStateInformation (const void* data, int sizeInBytes)
         }
 }
 
-juce::AudioProcessorEditor* FerroProcessor::createEditor() { return new FerroEditor (*this); }
+juce::AudioProcessorEditor* TapeheadProcessor::createEditor() { return new TapeheadEditor (*this); }
 
-juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter() { return new FerroProcessor(); }
+juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter() { return new TapeheadProcessor(); }

@@ -1,4 +1,4 @@
-# Ferro Echo (working name)
+# Tapehead Echo
 
 A tape-loop echo and spring reverb plugin (VST3 + standalone) modelled on the behaviour of the
 classic 1970s three-playback-head tape echo (the RE-201 class of unit). See `docs/FEATURES.md`.

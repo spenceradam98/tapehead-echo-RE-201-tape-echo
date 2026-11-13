@@ -3,20 +3,20 @@
 #include <juce_audio_utils/juce_audio_utils.h>
 #include "PluginProcessor.h"
 
-class FerroLookAndFeel : public juce::LookAndFeel_V4
+class TapeheadLookAndFeel : public juce::LookAndFeel_V4
 {
 public:
-    FerroLookAndFeel();
+    TapeheadLookAndFeel();
     void drawRotarySlider (juce::Graphics&, int x, int y, int w, int h, float pos, float start, float end, juce::Slider&) override;
     void drawToggleButton (juce::Graphics&, juce::ToggleButton&, bool highlighted, bool down) override;
     void drawButtonBackground (juce::Graphics&, juce::Button&, const juce::Colour&, bool highlighted, bool down) override;
 };
 
-class FerroEditor : public juce::AudioProcessorEditor, private juce::Timer
+class TapeheadEditor : public juce::AudioProcessorEditor, private juce::Timer
 {
 public:
-    explicit FerroEditor (FerroProcessor&);
-    ~FerroEditor() override;
+    explicit TapeheadEditor (TapeheadProcessor&);
+    ~TapeheadEditor() override;
 
     void paint (juce::Graphics&) override;
     void paintOverChildren (juce::Graphics&) override;
@@ -39,8 +39,8 @@ private:
     void drawTapeWindow (juce::Graphics&, juce::Rectangle<float>);
     void drawHeadChart (juce::Graphics&, juce::Rectangle<float>);
 
-    FerroProcessor& proc;
-    FerroLookAndFeel lnf;
+    TapeheadProcessor& proc;
+    TapeheadLookAndFeel lnf;
     std::vector<std::unique_ptr<Knob>> knobs;
     Knob *input = nullptr, *mode = nullptr, *rate = nullptr, *intensity = nullptr, *echoVol = nullptr, *reverbVol = nullptr,
          *bass = nullptr, *treble = nullptr, *wow = nullptr, *age = nullptr, *noise = nullptr, *output = nullptr;
@@ -56,5 +56,5 @@ private:
     int powerFlash = 0;
     double tapePos = 0;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FerroEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TapeheadEditor)
 };
